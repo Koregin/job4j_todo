@@ -19,5 +19,5 @@ public interface Store {
 
     Item findById(int id);
 
-    void setDone(int id);
+    boolean setDone(int id);
 }
