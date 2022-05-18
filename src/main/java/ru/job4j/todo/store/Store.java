@@ -18,4 +18,6 @@ public interface Store {
     boolean delete(int id);
 
     Item findById(int id);
+
+    void setDone(int id);
 }

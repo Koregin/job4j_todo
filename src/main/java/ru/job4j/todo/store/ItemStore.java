@@ -114,4 +114,20 @@ public class ItemStore implements Store {
             throw e;
         }
     }
+
+    @Override
+    public void setDone(int id) {
+        final Session session = sf.openSession();
+        try (session) {
+            session.beginTransaction();
+            session.createQuery("update Item i set i.done = :newDone where i.id = :fId")
+                    .setParameter("newDone", true)
+                    .setParameter("fId", id)
+                    .executeUpdate();
+            session.getTransaction().commit();
+        } catch (final Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        }
+    }
 }

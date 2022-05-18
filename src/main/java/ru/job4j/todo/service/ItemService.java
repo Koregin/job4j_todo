@@ -43,8 +43,6 @@ public class ItemService {
     }
 
     public void setDone(int id) {
-        Item item = store.findById(id);
-        item.setDone(true);
-        store.replace(item);
+        store.setDone(id);
     }
 }
