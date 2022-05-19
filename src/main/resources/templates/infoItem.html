@@ -37,12 +37,15 @@
                     <p><b>Создана:</b>
                         <span th:text="${#dates.format(item.created, 'dd-MM-yyyy HH:mm')}"></span>
                     </p>
+                    <p><b>Автор:</b>
+                        <span th:text="${item.user.getUsername()}"></span>
+                    </p>
                     <p><b>Статус:</b>
                         <span th:if="${item.done == true}" style="color: green">Выполнена</span>
                         <span th:unless="${item.done == true}" style="color: red">Не выполнена</span>
                     </p>
                 </div>
-                <a th:href="@{/index}" class="btn btn-outline-info" role="button">Назад</a>
+                <a th:href="@{/items}" class="btn btn-outline-info" role="button">Назад</a>
                 <span th:if="${item.done == true}">
                 <a th:href="@{|/itemDone/${item.id}|}" class="btn btn-success" role="button">Выполнено</a>
                 </span>

@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Item;
+import ru.job4j.todo.model.User;
 
 import java.util.List;
 import java.util.function.Function;
@@ -19,23 +20,27 @@ public class ItemStore implements Store {
 
     @Override
     public Item add(Item item) {
-        this.tx(session -> session.save(item));
+        Integer id = (Integer) this.tx(session -> session.save(item));
+        item.setId(id);
         return item;
     }
 
     @Override
-    public List<Item> findAll() {
-        return this.tx(session -> session.createQuery("from Item").list());
+    public List<Item> findAll(User user) {
+        return this.tx(session -> session.createQuery("from Item i where i.user = :fUser")
+                .setParameter("fUser", user).list());
     }
 
     @Override
-    public List<Item> findDoneItems() {
-        return this.tx(session -> session.createQuery("from Item i where i.done = true").list());
+    public List<Item> findDoneItems(User user) {
+        return this.tx(session -> session.createQuery("from Item i where i.user = :fUser and i.done = true")
+                .setParameter("fUser", user).list());
     }
 
     @Override
-    public List<Item> findNewItems() {
-        return this.tx(session -> session.createQuery("from Item i where i.done = false").list());
+    public List<Item> findNewItems(User user) {
+        return this.tx(session -> session.createQuery("from Item i where i.user = :fUser and i.done = false")
+                .setParameter("fUser", user).list());
     }
 
     @Override
