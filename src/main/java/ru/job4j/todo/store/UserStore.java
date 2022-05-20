@@ -20,15 +20,14 @@ public class UserStore {
     public Optional<User> create(User user) {
         Integer userId = (Integer) this.tx(session -> session.save(user));
         user.setId(userId);
-        return Optional.of(user);
+        return userId != 0 ? Optional.of(user) : Optional.empty();
     }
 
     public Optional<User> findUserByEmailAndPwd(String email, String password) {
-        User user = (User) this.tx(session -> session.createQuery("from User u where u.email = :fEmail and u.password = :fPwd")
+        return this.tx(session -> session.createQuery("from User u where u.email = :fEmail and u.password = :fPwd")
                 .setParameter("fEmail", email)
                 .setParameter("fPwd", password)
-                .uniqueResult());
-        return user != null ? Optional.of(user) : Optional.empty();
+                .uniqueResultOptional());
     }
 
     private <T> T tx(final Function<Session, T> command) {
