@@ -3,18 +3,24 @@ package ru.job4j.todo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Item;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.ItemService;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class ItemController {
     private final ItemService itemService;
+    private final CategoryService categoryService;
 
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, CategoryService categoryService) {
         this.itemService = itemService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/")
@@ -70,15 +76,25 @@ public class ItemController {
     }
 
     @GetMapping("/formAddItem")
-    public String addItem() {
+    public String addItem(Model model) {
+        model.addAttribute("categories", categoryService.findAll());
         return "addItem";
     }
 
     @PostMapping("/createItem")
-    public String createItem(@RequestParam("description") String description, HttpSession session) {
+    public String createItem(@RequestParam("description") String description,
+                             @RequestParam(value = "selectCategories", required = false) List<Integer> selectCategories,
+                             HttpSession session) {
+        List<Category> categoryList = new ArrayList<>();
+        if (selectCategories != null) {
+            for (Integer catId : selectCategories) {
+                categoryList.add(categoryService.findById(catId));
+            }
+        }
         User user = (User) session.getAttribute("user");
         Item item = new Item(description);
         item.setUser(user);
+        item.setCategories(categoryList);
         itemService.create(item);
         return "redirect:/items";
     }

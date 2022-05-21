@@ -44,6 +44,10 @@
                         <span th:if="${item.done == true}" style="color: green">Выполнена</span>
                         <span th:unless="${item.done == true}" style="color: red">Не выполнена</span>
                     </p>
+                    <p><b>Категория:</b>
+                        <span th:each="category,iterStat : ${item.getCategories()}"
+                              th:text="${category.name} + ${!iterStat.last ? ', ' : ''}"></span>
+                    </p>
                 </div>
                 <a th:href="@{/items}" class="btn btn-outline-info" role="button">Назад</a>
                 <span th:if="${item.done == true}">
