@@ -1,5 +1,7 @@
 package ru.job4j.todo.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.*;
@@ -13,6 +15,7 @@ public class Item {
     private String description;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
     private Date created;
 
     private boolean done;

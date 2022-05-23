@@ -62,20 +62,9 @@ public class ItemStore implements Store {
 
     @Override
     public Item findById(int id) {
-        final Session session = sf.openSession();
-        final Transaction tx = session.beginTransaction();
-        try {
-            Item item = (Item) session.createQuery("select i from Item i left join fetch i.categories where i.id = :fId")
-                            .setParameter("fId", id)
-                            .uniqueResult();
-            tx.commit();
-            return item;
-        } catch (final Exception e) {
-            session.getTransaction().rollback();
-            throw e;
-        } finally {
-            session.close();
-        }
+        return (Item) this.tx(session -> session.createQuery("select i from Item i left join fetch i.categories where i.id = :fId")
+                .setParameter("fId", id)
+                .uniqueResult());
     }
 
     @Override
